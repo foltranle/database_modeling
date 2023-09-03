@@ -1,0 +1,37 @@
+CREATE TABLE `customer` (
+  `firts_name` varchar(40),
+  `last_name` varchar(40),
+  `CPF` Type,
+  `id_customer` int auto_increment primary key
+);
+
+CREATE TABLE `service_order` (
+  `license_plate` varchar(8) primary key,
+  `priority` enum("high", "low"),
+  `affected_system` enum("motor", "bodywork", "steering")
+);
+
+CREATE TABLE `car` (
+  `model` varchar(40),
+  `brand` varchar(40),
+  `year` char(5),
+  `license_plate` varchar(8),
+  `Id_customer` int,
+  FOREIGN KEY (`license_plate`) REFERENCES `service_order`(`license_plate`), ('id_customer') REFERENCES 'customer'('id_customer')
+);
+
+CREATE TABLE `motor` (
+  `leaking` bool,
+  `repair` bool,
+  `rubber_belts` bool
+);
+
+CREATE TABLE `steering` (
+  `alignment` bool,
+  `tires` bool
+);
+
+CREATE TABLE `bodywork` (
+  `painting` bool,
+  `repair` bool
+);
