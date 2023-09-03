@@ -2,6 +2,7 @@ CREATE TABLE `customer` (
   `firts_name` varchar(40),
   `last_name` varchar(40),
   `CPF` Type,
+  `gender` enum("male", "female"),
   `id_customer` int auto_increment primary key
 );
 
