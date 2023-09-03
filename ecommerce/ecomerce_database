@@ -1,0 +1,127 @@
+-- creation of an e-commerce database
+CREATE DATABASE ecommerce;
+USE ecommerce;
+
+-- create customer table
+
+CREATE TABLE customer(
+		id_customer int auto_increment primary key,
+        first_name varchar(15),
+        surname varchar(45),
+        CPF char(11) not null,
+        adress_customer varchar(100),
+        constraint customer_unique_cpf unique(CPF)
+);
+
+alter table customer auto_increment = 1;
+
+-- create product table
+
+CREATE TABLE product(
+		id_product int auto_increment primary key,
+        name_product varchar(15) not null,
+        category enum("woodcraft", "knited", "painting", "clay"),
+        type_product enum("finished product", "pattern", "diagram") not null,
+        gift bool default false,
+        size varchar(15)
+);
+     
+-- create order table
+
+CREATE TABLE orders(
+		id_order int auto_increment primary key,
+        id_customer int,
+        order_status enum("received", "processed", "shipped", "delivered", "canceled") default("received"),
+        shippment_price float default 0,
+        payment_type enum("card", "paypal", "pix", "bank slip"),
+        order_placement timestamp,
+        constraint fk_orders_customer foreign key (id_order) references customer(id_customer)
+);
+
+-- create stock table
+
+CREATE TABLE stock(
+		SKU int auto_increment primary key,
+        storage_location varchar(200),
+        quantity int default 0
+        );
+
+-- create table supplier
+
+CREATE TABLE supplier(
+		id_supplier int auto_increment primary key,
+        social_name_supplier varchar(200) not null,
+        email_supplier varchar(50) not null,
+        CNPJ char(15) not null,
+        constraint unique_supplier unique (CNPJ)
+        );
+        
+-- create table seller 
+
+CREATE TABLE affiliate(
+		id_affiliate int auto_increment primary key,
+        social_name_affiliate varchar(200) not null,
+        email_affiliate varchar(50) not null,
+        promo_code char(8) not null
+       );
+       
+-- create product and affiliate relation table
+
+CREATE TABLE product_affiliate(
+		id_product_affiliate int auto_increment primary key,
+        id_product int,
+        quantity_prod_aff int default 1,
+        primary key	(id_product_affiliate, id_product),
+        constraint fk_prod_aff foreign key (id_product_affiliate) references affiliate (id_affiliate),
+        constraint fk_prod_prod foreign key (id_product) references product(id_product)
+       );
+       
+-- create product and orders relation table
+
+CREATE TABLE product_orders(
+		id_product_order int auto_increment primary key,
+        id_product_product int,
+        quantity_prod_order int default 1,
+        stock_status enum("available", "not available") default ("available"),
+        primary key	(id_product_order, id_product_product),
+        constraint fk_prod_order foreign key (id_product_order) references orders (id_order),
+        constraint fk_prod_prod foreign key (id_product) references product(id_product)
+       );
+       
+-- inserindo dados
+
+INSERT INTO customers (id_customer, first_name, surname, CPF, adress_customer)
+values (1, 'Branden', 'Rasper', '758459707', '18.133.62.112'),
+ (2, 'Kaye', 'Kayes', '255748300', '240.149.159.217'),
+ (3, 'Kasey', 'Bailes', '821590971', '247.1.123.172'),
+ (4, 'Henrietta', 'Rushworth', '581058453', '111.247.224.2'),
+ (5, 'Henrik', 'Hancell', '692433341', '43.195.86.153'),
+ (6, 'Ezmeralda', 'Gosden', '407197169', '68.219.146.123'),
+ (7, 'Bertie', 'Jannaway', '550410983', '101.56.78.24'),
+ (8, 'Wandis', 'Cadden', '673939248', '221.93.77.160'),
+ (9, 'Fonsie', 'Obey', '140749983', '189.91.214.213'),
+ (10, 'Gan', 'Korda', '454955517', '197.188.106.187');
+ 
+ INSERT INTO product(id_product, name_product, category, type_product, gift, size)
+		values	(1, 'Wine - Cava Aria Estate Brut', 'knit', 'pattern', true, '81x36x81'),
+        (2, 'Salmon - Smoked, Sliced', 'painting', 'finished', false, '28x03x07'),
+        (3, 'Placemat - Scallop, White', 'knit', 'pattern', true, '14x67x04'),
+        (4, 'Squash - Acorn', 'knit', 'finished', false, '10x91x24'),
+        (5, 'Cheese - Brick With Onion', 'knit', 'pattern', true, '04x32x74'),
+        (6, 'Orange - Canned, Mandarin', 'woodwork', 'finished', false, '69x73x35'),
+        (7, 'Bread - White, Sliced', 'woodwork', 'pattern', false, '68x71x88'),
+        (8, 'Scallops - 10/20', 'woodwork', 'pattern', false, '05x59x77'),
+        (9, 'Puree - Mango', 'painting', 'pattern', false, '09x03x34'),
+        (10, 'Clam Nectar', 'painting', 'pattern', false, '45x05x15');
+        
+INSERT INTO orders(id_orders, id_customer, order_status, shippment_price, payment_type, order_placement)
+		values (1, 3, 'painting', 213.1, 'pix', '01/20/2023'),
+        (2, 6, 'woodwork', 238.4, 'bank_payslip', '02/17/2023'),
+        (3, 0, 'knit', 112.96, 'pix', '09/16/2022'),
+        (4, 10, 'painting', 25.83, 'pix', '10/02/2022'),
+        (5, 2, 'knit', 475.92, 'bank_payslip', '01/02/2023'),
+        (6, 2, 'woodwork', 466.27, 'card', '11/25/2022'),
+        (7, 9, 'knit', 50.89, 'bank_payslip', '05/06/2023'),
+        (8, 1, 'painting', 200.73, 'card', '01/15/2023'),
+        (9, 7, 'painting', 168.47, 'pix', '03/04/2023'),
+        (10, 0, 'knit', 443.18, 'bank_payslip', '09/08/2022');
